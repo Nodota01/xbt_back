@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xbt.mapper.UserMapper">
+    <resultMap id="userResultMap" type="com.xbt.model.User">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="email" column="email"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="name" column="name"/>
+        <result property="gender" column="gender"/>
+        <result property="userNumber" column="user_number"/>
+        <result property="status" column="status"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="createdBy" column="creator"/>
+        <result property="updatedBy" column="updater"/>
+        <result property="createTime" column="create_at"/>
+        <result property="updateTime" column="update_at"/>
+    </resultMap>
+
+    <select id="findByConditions" resultMap="userResultMap">
+        SELECT * FROM users
+        WHERE is_deleted = 0
+        <if test="username != null and username != ''">
+            AND username LIKE CONCAT('%', #{username}, '%')
+        </if>
+        <if test="email != null and email != ''">
+            AND email LIKE CONCAT('%', #{email}, '%')
+        </if>
+        <if test="phoneNumber != null and phoneNumber != ''">
+            AND phone_number LIKE CONCAT('%', #{phoneNumber}, '%')
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="com.xbt.model.User">
+        INSERT INTO users (username, password,email, phone_number, name, gender, user_number ,creator, updater, created_at, updated_at)
+        VALUES (#{username},#{password}, #{email}, #{phoneNumber}, #{name}, #{gender}, #{userNumber},   #{createdBy}, #{updatedBy}, #{createTime}, #{updateTime})
+    </insert>
+
+    <select id="findByUsername" parameterType="String" resultMap="userResultMap">
+        SELECT * FROM users WHERE username = #{username} AND is_deleted = 0
+    </select>
+
+    <update id="update" parameterType="com.xbt.model.User">
+        UPDATE users
+        SET username = #{username},
+        email = #{email},
+        phone_number = #{phoneNumber},
+        name = #{name},
+        gender = #{gender},
+        user_number = #{userNumber},
+        status = #{status},
+        updated_by = #{updatedBy},
+        update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+
+    <update id="delete" parameterType="map">
+        UPDATE users
+        SET is_deleted = 1,
+        updated_by = #{updatedBy},
+        update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+
+    <select id="findAll" resultMap="userResultMap">
+        SELECT * FROM users WHERE is_deleted = 0
+    </select>
+</mapper>

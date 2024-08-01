@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xbt.mapper.MenuMapper">
+
+    <resultMap id="menuResultMap" type="com.xbt.model.Menu">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="path" column="path"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="createdBy" column="creator"/>
+        <result property="updatedBy" column="updater"/>
+        <result property="createTime" column="create_at"/>
+        <result property="updateTime" column="update_at"/>
+    </resultMap>
+
+    <select id="findById" resultMap="menuResultMap">
+        SELECT * FROM menus WHERE id = #{id} AND is_deleted = 0
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO menus (name, path, is_deleted, created_by, updated_by, create_time, update_time)
+        VALUES (#{name}, #{path}, 0, #{createdBy}, #{updatedBy}, #{createTime}, #{updateTime})
+    </insert>
+
+    <update id="update">
+        UPDATE menus SET name = #{name}, path = #{path}, updated_by = #{updatedBy}, update_time = #{updateTime}
+        WHERE id = #{id} AND is_deleted = 0
+    </update>
+
+    <update id="delete">
+        UPDATE menus SET is_deleted = 1, updated_by = #{updatedBy}, update_time = #{updateTime} WHERE id = #{id}
+    </update>
+
+    <select id="findAll" resultMap="menuResultMap">
+        SELECT * FROM menus WHERE is_deleted = 0
+    </select>
+
+    <select id="findMenusByUserId" resultType="com.xbt.model.Menu">
+        SELECT m.id, m.name, m.url, m.parent_id
+        FROM menu m
+        INNER JOIN user_menu um ON m.id = um.menu_id
+        WHERE um.user_id = #{userId}
+    </select>
+
+</mapper>

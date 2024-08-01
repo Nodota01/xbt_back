@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xbt.mapper.RoleMapper">
+    <resultMap id="roleResultMap" type="com.xbt.model.Role">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="createdBy" column="creator"/>
+        <result property="updatedBy" column="updater"/>
+        <result property="createTime" column="create_at"/>
+        <result property="updateTime" column="update_at"/>
+    </resultMap>
+
+    <select id="findById" resultMap="roleResultMap">
+        SELECT * FROM roles WHERE id = #{id} AND is_deleted = 0
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO roles (name, description, is_deleted, created_by, updated_by, create_time, update_time)
+        VALUES (#{name}, #{description}, 0, #{createdBy}, #{updatedBy}, #{createTime}, #{updateTime})
+    </insert>
+
+    <update id="update">
+        UPDATE roles SET name = #{name}, description = #{description}, updated_by = #{updatedBy}, update_time = #{updateTime}
+        WHERE id = #{id} AND is_deleted = 0
+    </update>
+
+    <update id="delete">
+        UPDATE roles SET is_deleted = 1, updated_by = #{updatedBy}, update_time = #{updateTime} WHERE id = #{id}
+    </update>
+
+    <select id="findAll" resultMap="roleResultMap">
+        SELECT * FROM roles WHERE is_deleted = 0
+    </select>
+</mapper>
